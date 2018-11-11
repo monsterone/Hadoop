@@ -1,0 +1,95 @@
+准备Linux环境
+1.修改主机名
+   vi /etc/sysconfig/network
+   NETWORKING=yes
+   HOSTNAME=monster
+2.修改ip地址（若仅主机模式，可不配网关，子网掩码，DNS等）
+vi /etc/sysconfig/network-scripts/ifcfg-etho
+DEVICE=eth0
+TYPE=Ethernet
+ONBOOT=yes
+BOOTPROTO=static
+IPADDR=192.168.6.129
+NETMASK=255.255.255.0
+#GATEWAY=192.168.6.2
+#DNS1=144.144.144.144
+#DNS2=8.8.8.8
+3.重启网络服务
+service network restart
+4.配置主机名和IP地址的映射关系
+vi /etc/hosts
+
+5.关闭防火墙
+service iptables status (查看防火墙状态)
+service iptables stop （关闭防火墙）
+6.设置防火墙开机不启动
+chkconfig iptables --list （查看固定防火墙状态）
+chkconfig iptables off （关闭防火墙，关机重启后任生效）
+
+附：克隆一个主机的配置（尚硅谷）
+
+vim /etc/udev/rules.d/70-persistent-net.rules 
+删除前一个，复制后一个的mac 放在下一步..../ifcfg-eth0中
+vi /etc/sysconfig/network  
+修改主机名称
+vim /etc/hosts 
+修改主机名和ip地址间的映射关系 hostname 查看/hostname monster 修改
+
+atguigu用户 su root 切换到root
+vim /etc/sudoers
+复制一行atgugu ALL=(ALL) ALL使atgigu用户和root一样执行某些操作
+
+
+
+
+修改后 atguigu 用户登录时，可在没有权限的命令前面加sudo 命令，可执行
+如：atguigu:~sudo /etc/profile  可执行该命令，否则该用户无法直接执行此命令
+安装JDK
+1.上传JDK
+mkdir /usr/java
+2.解压JDK
+tar -zxvf jdk-8u111-linux-x64.tar.gz -C /usr/java
+3.修改环境变量
+vi /etc/profile
+export JAVA_HOME=/usr/java/jdk1.8.0_111
+export PATH=$PATH:$JAVA_HOME/bin
+4.重新加载环境变量脚本
+source /etc/profile
+5.验证Java是否生效
+Java -version
+安装Hadoop
+同安装JDK
+5.	将Hadoop添加到环境变量
+	（1）获取Hadoop安装路径
+[atguigu@hadoop101 hadoop-2.7.2]$ pwd
+/opt/module/hadoop-2.7.2
+	（2）打开/etc/profile文件
+[atguigu@hadoop101 hadoop-2.7.2]$ sudo vi /etc/profile
+在profile文件末尾添加JDK路径：（shitf+g）
+##HADOOP_HOME
+export HADOOP_HOME=/opt/module/hadoop-2.7.2
+export PATH=$PATH:$HADOOP_HOME/bin
+export PATH=$PATH:$HADOOP_HOME/sbin
+（3）保存后退出
+:wq
+	（4）让修改后的文件生效
+[atguigu@ hadoop101 hadoop-2.7.2]$ source /etc/profile
+6.	测试是否安装成功
+[atguigu@hadoop101 hadoop-2.7.2]$ hadoop version
+Hadoop 2.7.2
+7.	重启(如果Hadoop命令不能用再重启)
+[atguigu@ hadoop101 hadoop-2.7.2]$ sync
+[atguigu@ hadoop101 hadoop-2.7.2]$ sudo reboot
+
+
+
+
+
+
+
+
+
+
+
+
+
